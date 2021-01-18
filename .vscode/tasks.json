@@ -1,0 +1,32 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "install-build",
+			"command": "npm run start:debug",
+			"dependsOn": "npm build",
+			"problemMatcher": "$tsc",
+            "options": {
+                "cwd": "${workspaceFolder}"
+        },
+		},
+		{
+			"type": "shell",
+			"label": "install",
+			"command": "npm install",
+            "options": {
+                "cwd": "${workspaceFolder}"
+        },
+		},
+		{
+			"type": "shell",
+			"label": "build",
+			"command": "npm run build",
+			"dependsOn": "npm install",
+            "options": {
+                "cwd": "${workspaceFolder}"
+        },
+		}
+	]
+}

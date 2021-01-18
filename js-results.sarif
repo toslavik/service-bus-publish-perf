@@ -1,0 +1,298 @@
+{
+  "$schema" : "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "version" : "2.1.0",
+  "runs" : [ {
+    "tool" : {
+      "driver" : {
+        "name" : "CodeQL",
+        "organization" : "GitHub",
+        "semanticVersion" : "2.4.0",
+        "rules" : [ {
+          "id" : "javascript/service-bus-publish/wrong-assignment",
+          "name" : "javascript/service-bus-publish/wrong-assignment",
+          "shortDescription" : {
+            "text" : "Wrong Assignment"
+          },
+          "fullDescription" : {
+            "text" : "Some description here."
+          },
+          "defaultConfiguration" : {
+            "level" : "error"
+          },
+          "properties" : {
+            "kind" : "problem",
+            "name" : "Wrong Assignment",
+            "description" : "Some description here.",
+            "id" : "javascript/service-bus-publish/wrong-assignment",
+            "problem.severity" : "error"
+          }
+        } ]
+      }
+    },
+    "artifacts" : [ {
+      "location" : {
+        "uri" : "service-bus-publish/dist/app.controller.js",
+        "uriBaseId" : "%SRCROOT%",
+        "index" : 0
+      }
+    }, {
+      "location" : {
+        "uri" : "service-bus-publish/dist/app.module.js",
+        "uriBaseId" : "%SRCROOT%",
+        "index" : 1
+      }
+    }, {
+      "location" : {
+        "uri" : "service-bus-publish/dist/app.service.js",
+        "uriBaseId" : "%SRCROOT%",
+        "index" : 2
+      }
+    }, {
+      "location" : {
+        "uri" : "service-bus-publish/dist/bus.service.js",
+        "uriBaseId" : "%SRCROOT%",
+        "index" : 3
+      }
+    }, {
+      "location" : {
+        "uri" : "service-bus-publish/dist/dto/servicebus.js",
+        "uriBaseId" : "%SRCROOT%",
+        "index" : 4
+      }
+    }, {
+      "location" : {
+        "uri" : "service-bus-publish/dist/main.js",
+        "uriBaseId" : "%SRCROOT%",
+        "index" : 5
+      }
+    }, {
+      "location" : {
+        "uri" : "service-bus-publish/src/bus.service.ts",
+        "uriBaseId" : "%SRCROOT%",
+        "index" : 6
+      }
+    }, {
+      "location" : {
+        "uri" : "service-bus-publish/src/express.ts",
+        "uriBaseId" : "%SRCROOT%",
+        "index" : 7
+      }
+    } ],
+    "results" : [ {
+      "ruleId" : "javascript/service-bus-publish/wrong-assignment",
+      "ruleIndex" : 0,
+      "message" : {
+        "text" : "This expression has no effect."
+      },
+      "locations" : [ {
+        "physicalLocation" : {
+          "artifactLocation" : {
+            "uri" : "service-bus-publish/dist/app.controller.js",
+            "uriBaseId" : "%SRCROOT%",
+            "index" : 0
+          },
+          "region" : {
+            "startLine" : 1,
+            "endColumn" : 13
+          }
+        }
+      } ],
+      "partialFingerprints" : {
+        "primaryLocationLineHash" : "ee533925ca37da40:1",
+        "primaryLocationStartColumnFingerprint" : "0"
+      }
+    }, {
+      "ruleId" : "javascript/service-bus-publish/wrong-assignment",
+      "ruleIndex" : 0,
+      "message" : {
+        "text" : "This expression has no effect."
+      },
+      "locations" : [ {
+        "physicalLocation" : {
+          "artifactLocation" : {
+            "uri" : "service-bus-publish/dist/app.module.js",
+            "uriBaseId" : "%SRCROOT%",
+            "index" : 1
+          },
+          "region" : {
+            "startLine" : 1,
+            "endColumn" : 13
+          }
+        }
+      } ],
+      "partialFingerprints" : {
+        "primaryLocationLineHash" : "ee533925ca37da40:1",
+        "primaryLocationStartColumnFingerprint" : "0"
+      }
+    }, {
+      "ruleId" : "javascript/service-bus-publish/wrong-assignment",
+      "ruleIndex" : 0,
+      "message" : {
+        "text" : "This expression has no effect."
+      },
+      "locations" : [ {
+        "physicalLocation" : {
+          "artifactLocation" : {
+            "uri" : "service-bus-publish/dist/app.service.js",
+            "uriBaseId" : "%SRCROOT%",
+            "index" : 2
+          },
+          "region" : {
+            "startLine" : 1,
+            "endColumn" : 13
+          }
+        }
+      } ],
+      "partialFingerprints" : {
+        "primaryLocationLineHash" : "ee533925ca37da40:1",
+        "primaryLocationStartColumnFingerprint" : "0"
+      }
+    }, {
+      "ruleId" : "javascript/service-bus-publish/wrong-assignment",
+      "ruleIndex" : 0,
+      "message" : {
+        "text" : "This expression has no effect."
+      },
+      "locations" : [ {
+        "physicalLocation" : {
+          "artifactLocation" : {
+            "uri" : "service-bus-publish/dist/bus.service.js",
+            "uriBaseId" : "%SRCROOT%",
+            "index" : 3
+          },
+          "region" : {
+            "startLine" : 1,
+            "endColumn" : 13
+          }
+        }
+      } ],
+      "partialFingerprints" : {
+        "primaryLocationLineHash" : "ee533925ca37da40:1",
+        "primaryLocationStartColumnFingerprint" : "0"
+      }
+    }, {
+      "ruleId" : "javascript/service-bus-publish/wrong-assignment",
+      "ruleIndex" : 0,
+      "message" : {
+        "text" : "This expression has no effect."
+      },
+      "locations" : [ {
+        "physicalLocation" : {
+          "artifactLocation" : {
+            "uri" : "service-bus-publish/dist/bus.service.js",
+            "uriBaseId" : "%SRCROOT%",
+            "index" : 3
+          },
+          "region" : {
+            "startLine" : 20,
+            "startColumn" : 9,
+            "endColumn" : 22
+          }
+        }
+      } ],
+      "partialFingerprints" : {
+        "primaryLocationLineHash" : "8c6aae616e4c7b07:1",
+        "primaryLocationStartColumnFingerprint" : "0"
+      }
+    }, {
+      "ruleId" : "javascript/service-bus-publish/wrong-assignment",
+      "ruleIndex" : 0,
+      "message" : {
+        "text" : "This expression has no effect."
+      },
+      "locations" : [ {
+        "physicalLocation" : {
+          "artifactLocation" : {
+            "uri" : "service-bus-publish/dist/dto/servicebus.js",
+            "uriBaseId" : "%SRCROOT%",
+            "index" : 4
+          },
+          "region" : {
+            "startLine" : 1,
+            "endColumn" : 13
+          }
+        }
+      } ],
+      "partialFingerprints" : {
+        "primaryLocationLineHash" : "fb07f083268166b9:1",
+        "primaryLocationStartColumnFingerprint" : "0"
+      }
+    }, {
+      "ruleId" : "javascript/service-bus-publish/wrong-assignment",
+      "ruleIndex" : 0,
+      "message" : {
+        "text" : "This expression has no effect."
+      },
+      "locations" : [ {
+        "physicalLocation" : {
+          "artifactLocation" : {
+            "uri" : "service-bus-publish/dist/main.js",
+            "uriBaseId" : "%SRCROOT%",
+            "index" : 5
+          },
+          "region" : {
+            "startLine" : 1,
+            "endColumn" : 13
+          }
+        }
+      } ],
+      "partialFingerprints" : {
+        "primaryLocationLineHash" : "dbb135fbf90db078:1",
+        "primaryLocationStartColumnFingerprint" : "0"
+      }
+    }, {
+      "ruleId" : "javascript/service-bus-publish/wrong-assignment",
+      "ruleIndex" : 0,
+      "message" : {
+        "text" : "This expression has no effect."
+      },
+      "locations" : [ {
+        "physicalLocation" : {
+          "artifactLocation" : {
+            "uri" : "service-bus-publish/src/bus.service.ts",
+            "uriBaseId" : "%SRCROOT%",
+            "index" : 6
+          },
+          "region" : {
+            "startLine" : 26,
+            "startColumn" : 5,
+            "endColumn" : 18
+          }
+        }
+      } ],
+      "partialFingerprints" : {
+        "primaryLocationLineHash" : "1c62386a30382ec1:1",
+        "primaryLocationStartColumnFingerprint" : "0"
+      }
+    }, {
+      "ruleId" : "javascript/service-bus-publish/wrong-assignment",
+      "ruleIndex" : 0,
+      "message" : {
+        "text" : "This expression has no effect."
+      },
+      "locations" : [ {
+        "physicalLocation" : {
+          "artifactLocation" : {
+            "uri" : "service-bus-publish/src/express.ts",
+            "uriBaseId" : "%SRCROOT%",
+            "index" : 7
+          },
+          "region" : {
+            "startLine" : 18,
+            "startColumn" : 5,
+            "endColumn" : 13
+          }
+        }
+      } ],
+      "partialFingerprints" : {
+        "primaryLocationLineHash" : "da6ac4868c4e2cd5:1",
+        "primaryLocationStartColumnFingerprint" : "0"
+      }
+    } ],
+    "newlineSequences" : [ "\r\n", "\n", " ", " " ],
+    "columnKind" : "utf16CodeUnits",
+    "properties" : {
+      "semmle.formatSpecifier" : "sarif-latest"
+    }
+  } ]
+}

@@ -1,0 +1,43 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {   "type": "pwa-node",
+            "request": "launch",
+            "name": "Launch Tests",
+            "program": "${workspaceFolder}/dist/main.js",
+            "internalConsoleOptions": "openOnSessionStart",
+            // "preLaunchTask": "npm run build",
+            "sourceMaps": true,
+            "resolveSourceMapLocations": [
+                "${workspaceFolder}/**",
+                "!**/node_modules/**"
+            ],
+            "preLaunchTask": "build",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "name": "Attach to Node Functions",
+            "type": "node",
+            "request": "attach",
+            "port": 9229
+            
+        },
+            {
+              "name": "Launch TypeScript",
+              "type": "node",
+              "request": "launch",
+              "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
+              "args": ["./receive.ts", "--transpile-only","10","45530","false"],
+              "cwd": "${workspaceFolder}/src",
+              "internalConsoleOptions": "openOnSessionStart",
+              "skipFiles": ["<node_internals>/**", "node_modules/**"],
+              "env": {
+                "TS_NODE_PROJECT": "${workspaceFolder}/tsconfig.json"
+              }
+            }
+        
+    ]
+}
