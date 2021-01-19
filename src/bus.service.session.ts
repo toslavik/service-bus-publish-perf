@@ -10,7 +10,8 @@ import * as moment from 'moment';
 dotenv.config();
 
 
-const queueName = "test-no-session";
+const queueNameSession = "test";
+// const queueName = "test";
 const maxInflight = 100;
 let messageBody;
 
@@ -18,19 +19,19 @@ const _start = moment();
 let _messages = 0;
 let msgc = 0;
 @Injectable()
-export class ServiceBus {
+export class ServiceBusSession {
 
 
-  async sendMessage(sbClient: ServiceBusClient, msg: Message[], count: number, sessionId: string) {
+  async sendMessageSession(sbClient: ServiceBusClient, msg: Message[], count: number, sessionId: string) {
     // createSender() also works with topics
-    const sender = sbClient.createSender(queueName);
+    const sender = sbClient.createSender(queueNameSession);
     messageBody = msg;
     
 
     const promises: Promise<void>[] = [];
 
     for (let i = 0; i < maxInflight; i++) {
-      const promise = this.executeSendsAsync(sender, count);
+      const promise = this.executeSendsAsyncSession(sender, count,"session-1");
       promises[i] = promise;
     }
   
@@ -40,14 +41,15 @@ export class ServiceBus {
 
   }
 
-  async executeSendsAsync(sender: ServiceBusSender, count: number): Promise<void> {
+  async executeSendsAsyncSession(sender: ServiceBusSender, count: number, sessionId: string): Promise<void> {
     while (++msgc <= count) {
       const message = {
         body: messageBody,
-        label: "Message"
+        label: "Message",
+        sessionId: sessionId
       };
 
-      console.log(`Sending message: "${msgc}" to queue "${queueName}"`);
+      console.log(`Sending message: "${msgc}" to "${sessionId}"`);
       await sender.sendMessages(message);
     }
   
@@ -55,7 +57,7 @@ export class ServiceBus {
     // msgc--;
   }
 
-  async receiveMessages(maxConcurrentCalls: number) {
+  async receiveMessagesSession(maxConcurrentCalls: number) {
   
     const allMessages = 100000;
   
@@ -74,8 +76,7 @@ export class ServiceBus {
     const sbClientLocal = new ServiceBusClient(connectionString);
 
     const options:ServiceBusSessionReceiverOptions = {receiveMode:"receiveAndDelete"};
-    // const receiver = await sbClient.acceptSession(queueName, sessionId, options);
-    const receiver = await sbClientLocal.createReceiver(queueName,options);
+    const receiver = await sbClientLocal.acceptSession(queueNameSession, sessionId, options);
     const subscribeOptions:SubscribeOptions = {maxConcurrentCalls:maxConcurrentCalls,autoCompleteMessages:false};
 
      const subscription = receiver.subscribe({

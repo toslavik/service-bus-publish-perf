@@ -1,7 +1,8 @@
 import { ServiceBusClient } from '@azure/service-bus';
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ServiceBus } from './bus.service';
+import { ServiceBusSession} from './bus.service.session';
 import { v4 as uuidv4 } from 'uuid';
 import { Post } from '@nestjs/common';
 import { Body } from '@nestjs/common';
@@ -13,7 +14,7 @@ const sessionId = "session-1";
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService, private serviceBus: ServiceBus) {}
+  constructor(private readonly appService: AppService, private serviceBus: ServiceBus, private ServiceBusSession: ServiceBusSession) {}
 
   @Get()
   getHello(): string {
@@ -21,9 +22,17 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('getmessage')
-  async getMessage(): Promise<string> {
-    await this.serviceBus.receiveMessages();
+  @Get('getmessage/:maxConcCalls')
+  async getMessage(@Param('maxConcCalls') maxConcCalls:number): Promise<string> {
+    
+    await this.serviceBus.receiveMessages(maxConcCalls);
+    return "ok";
+  }
+
+  @Get('getmessagesession/:maxConcCalls')
+  async getMessageSession(@Param('maxConcCalls') maxConcCalls:number): Promise<string> {
+    
+    await this.ServiceBusSession.receiveMessagesSession(maxConcCalls);
     return "ok";
   }
 
@@ -39,7 +48,11 @@ export class AppController {
     // }
     const body:Message[] = msg.body
     console.log(body);
-    this.serviceBus.sendMessage(sbClient,body,msg.count,sessionId);
+    if(msg.session){
+      this.ServiceBusSession.sendMessageSession(sbClient,body,msg.count,sessionId);
+    }else {
+      this.serviceBus.sendMessage(sbClient,body,msg.count,sessionId);
+    }
     return "ok";
   }
 
