@@ -1,14 +1,11 @@
+import { delay, isServiceBusError, ProcessErrorArgs, ServiceBusClient, ServiceBusReceivedMessage, ServiceBusSender, ServiceBusSessionReceiverOptions, SubscribeOptions } from "@azure/service-bus";
 import { Injectable } from '@nestjs/common';
-import { delay, isServiceBusError, ProcessErrorArgs, ServiceBusClient, ServiceBusMessage, ServiceBusReceivedMessage, ServiceBusSender, ServiceBusSessionReceiverOptions, SubscribeOptions } from "@azure/service-bus";
-import { DefaultAzureCredential } from "@azure/identity";
-
-import { v4 as uuidv4 } from 'uuid';
 // Load the .env file if it exists
 import * as dotenv from "dotenv";
-import { Message } from './dto/servicebus';
 import * as moment from 'moment';
-dotenv.config();
+import { Message } from './dto/servicebus';
 
+dotenv.config();
 
 const queueName = "test-no-session";
 const maxInflight = 100;
@@ -21,7 +18,7 @@ let msgc = 0;
 export class ServiceBus {
 
 
-  async sendMessage(sbClient: ServiceBusClient, msg: Message[], count: number, sessionId: string) {
+  async sendMessage(sbClient: ServiceBusClient, msg: Message[], count: number) {
     // createSender() also works with topics
     const sender = sbClient.createSender(queueName);
     messageBody = msg;
@@ -60,13 +57,12 @@ export class ServiceBus {
     const allMessages = 100000;
   
     const writeResultsPromise = this.WriteResults(allMessages);
-    await this.RunTest("session-1",maxConcurrentCalls, allMessages);
+    await this.RunTest(maxConcurrentCalls, allMessages);
     await writeResultsPromise;
   }
 
 
   async RunTest(
-    sessionId: string,
     maxConcurrentCalls: number,
     messages: number
   ): Promise<void> {
