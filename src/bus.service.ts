@@ -52,12 +52,21 @@ export class ServiceBus {
     // msgc--;
   }
 
-  async receiveMessages(maxConcurrentCalls: number) {
+  async receiveMessages(maxConcurrentCalls: number,receiverCount: number) {
   
     const allMessages = 100000;
-  
+    const receivers = receiverCount;
+    console.log("count of messages: " + allMessages);
+    console.log("count of receivers: " + receiverCount);
+    console.log("count of concurrent calls: " + maxConcurrentCalls);
+
     const writeResultsPromise = this.WriteResults(allMessages);
-    await this.RunTest(maxConcurrentCalls, allMessages);
+    const promises: Promise<void>[] = [];
+    for (let x=0; x < receivers; x++){
+      const promise = this.RunTest(maxConcurrentCalls, allMessages);
+      promises[x] = promise;
+    }
+    await Promise.all(promises);
     await writeResultsPromise;
   }
 
