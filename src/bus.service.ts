@@ -58,13 +58,13 @@ export class ServiceBus {
   ): Promise<void> {
     while (_messages <= messages) {
       if (batchAPI) {
-        console.log("batchSize:" + batchSize)
+        // console.log("batchSize:" + batchSize)
         const currentBatch = await sender.createMessageBatch({maxSizeInBytes: batchSize});
         while (
           currentBatch.tryAddMessage({body: msg}) &&
           _messages + currentBatch.count <= messages         
         );
-        console.log("batchMessages: " + _messages);
+        // console.log("batchMessages: " + _messages);
         await sender.sendMessages(currentBatch);
         _messages = _messages + currentBatch.count;
       } else {
@@ -74,18 +74,18 @@ export class ServiceBus {
     }
   }
 
-  async receiveMessages(maxConcurrentCalls: number,receiverCount: number) {
+  async receiveMessages(maxConcurrentCalls: number,receiverCount: number, receivedMessages: number) {
   
-    const allMessages = 100000;
+
     const receivers = receiverCount;
-    console.log("count of messages: " + allMessages);
+    console.log("count of messages to be received: " + receivedMessages);
     console.log("count of receivers: " + receiverCount);
     console.log("count of concurrent calls: " + maxConcurrentCalls);
 
-    const writeResultsPromise = this.WriteResults(allMessages);
+    const writeResultsPromise = this.WriteResults(receivedMessages);
     const promises: Promise<void>[] = [];
     for (let x=0; x < receivers; x++){
-      const promise = this.RunTest(maxConcurrentCalls, allMessages);
+      const promise = this.RunTest(maxConcurrentCalls, receivedMessages);
       promises[x] = promise;
     }
     await Promise.all(promises);

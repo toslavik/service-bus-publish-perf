@@ -11,7 +11,7 @@ const sessionId = "session-1";
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService, private serviceBus: ServiceBus, private ServiceBusSession: ServiceBusSession) {}
+  constructor(private readonly appService: AppService, private serviceBus: ServiceBus, private ServiceBusSession: ServiceBusSession) { }
 
   @Get()
   getHello(): string {
@@ -19,29 +19,30 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('getmessage/:maxConcCalls/:receiverCount')
-  async getMessage(@Param('maxConcCalls') maxConcCalls:number,@Param('receiverCount') receiverCount:number): Promise<string> {
-    
-    await this.serviceBus.receiveMessages(maxConcCalls,receiverCount);
+  @Get('getmessage/:maxConcCalls/:receiverCount/:receivedMessages')
+  async getMessage(@Param('maxConcCalls') maxConcCalls: number, @Param('receiverCount') receiverCount: number, 
+                    @Param('receivedMessages') receivedMessages: number): Promise<string> {
+
+    await this.serviceBus.receiveMessages(maxConcCalls, receiverCount,receivedMessages);
     return "ok";
   }
 
   @Get('getmessagesession/:maxConcCalls')
-  async getMessageSession(@Param('maxConcCalls') maxConcCalls:number): Promise<string> {
-    
+  async getMessageSession(@Param('maxConcCalls') maxConcCalls: number): Promise<string> {
+
     await this.ServiceBusSession.receiveMessagesSession(maxConcCalls);
     return "ok";
   }
 
   @Post('message')
-  postMessage(@Body() msg: any) : string {
-    
-    const body:Message[] = msg.body
+  postMessage(@Body() msg: any): string {
+
+    const body: Message[] = msg.body
     // console.log(body);
-    if(msg.useSession){
-      this.ServiceBusSession.sendMessageSession(sbClient,body,msg.count,sessionId);
-    }else {
-      this.serviceBus.sendMessage(sbClient,body,msg.count,msg.maxInflight,msg.isBatch, msg.batchSize);
+    if (msg.useSession) {
+      this.ServiceBusSession.sendMessageSession(sbClient, body, msg.count, sessionId);
+    } else {
+      this.serviceBus.sendMessage(sbClient, body, msg.count, msg.maxInflight, msg.isBatch, msg.batchSize);
     }
     return "ok";
   }
