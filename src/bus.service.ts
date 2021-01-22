@@ -8,7 +8,6 @@ import { Message } from './dto/servicebus';
 dotenv.config();
 
 const queueName = "test-no-session";
-const maxInflight = 100;
 let messageBody;
 
 const _start = moment();
@@ -18,38 +17,57 @@ let msgc = 0;
 export class ServiceBus {
 
 
-  async sendMessage(sbClient: ServiceBusClient, msg: Message[], count: number) {
-    // createSender() also works with topics
+  async sendMessage(sbClient: ServiceBusClient, msg: Message[], count: number,maxInflight:number, isBatch: true) {
+    const writeResultsPromise = this.WriteResults(count);
+
+    await this.RunTestSend(sbClient, msg, maxInflight, count,isBatch);
+  
+    await writeResultsPromise;
+
+  }
+  async RunTestSend(
+    sbClient: ServiceBusClient,
+    msgBody: Message[],
+    maxInflight: number,
+    messages: number,
+    batchAPI: boolean
+  ): Promise<void> {
+    // const ns = new ServiceBusClient(connectionString);
+  
     const sender = sbClient.createSender(queueName);
-    messageBody = msg;
-    
-
+  
     const promises: Promise<void>[] = [];
-
+  
     for (let i = 0; i < maxInflight; i++) {
-      const promise = this.executeSendsAsync(sender, count);
+      const promise = this.ExecuteSendsAsync(sender, messages,msgBody, batchAPI);
       promises[i] = promise;
     }
   
     await Promise.all(promises);
-    await sender.close();
-    console.log("sender closed");
-
-  }
-
-  async executeSendsAsync(sender: ServiceBusSender, count: number): Promise<void> {
-    while (++msgc <= count) {
-      const message = {
-        body: messageBody,
-        label: "Message"
-      };
-
-      console.log(`Sending message: "${msgc}" to queue "${queueName}"`);
-      await sender.sendMessages(message);
-    }
   
-    // Undo last increment, since a message was never sent on the final loop iteration
-    // msgc--;
+    await sbClient.close();
+  }
+  
+  async ExecuteSendsAsync(
+    sender: ServiceBusSender,
+    messages: number,
+    msg: any,
+    batchAPI: boolean
+  ): Promise<void> {
+    while (_messages <= messages) {
+      if (batchAPI) {
+        const currentBatch = await sender.createMessageBatch();
+        while (
+          currentBatch.tryAddMessage({body: msg}) &&
+          _messages + currentBatch.count <= messages
+        );
+        await sender.sendMessages(currentBatch);
+        _messages = _messages + currentBatch.count;
+      } else {
+        await sender.sendMessages({body: msg});
+        _messages++;
+      }
+    }
   }
 
   async receiveMessages(maxConcurrentCalls: number,receiverCount: number) {

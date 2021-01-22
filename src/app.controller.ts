@@ -48,7 +48,7 @@ export class AppController {
     if(msg.useSession){
       this.ServiceBusSession.sendMessageSession(sbClient,body,msg.count,sessionId);
     }else {
-      this.serviceBus.sendMessage(sbClient,body,msg.count);
+      this.serviceBus.sendMessage(sbClient,body,msg.count,msg.maxInflight,msg.isBatch);
     }
     return "ok";
   }
