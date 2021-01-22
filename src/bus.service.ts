@@ -7,7 +7,7 @@ import { Message } from './dto/servicebus';
 
 dotenv.config();
 
-const queueName = "test-no-session";
+// const queueName = "test-no-session";
 let messageBody;
 
 const _start = moment();
@@ -17,10 +17,11 @@ let msgc = 0;
 export class ServiceBus {
 
 
-  async sendMessage(sbClient: ServiceBusClient, msg: Message[], count: number,maxInflight:number, isBatch: true, batchSize?: number) {
+  async sendMessage(sbClient: ServiceBusClient, msg: Message[], count: number,maxInflight:number, 
+                        isBatch: true,queueName:string, batchSize?: number) {
     const writeResultsPromise = this.WriteResults(count);
 
-    await this.RunTestSend(sbClient, msg, maxInflight, count,isBatch, batchSize);
+    await this.RunTestSend(sbClient, msg, maxInflight, count,isBatch, queueName,batchSize);
   
     await writeResultsPromise;
 
@@ -31,6 +32,7 @@ export class ServiceBus {
     maxInflight: number,
     messages: number,
     batchAPI: boolean,
+    queueName:string,
     batchSize?: number
   ): Promise<void> {
     // const ns = new ServiceBusClient(connectionString);
@@ -74,7 +76,7 @@ export class ServiceBus {
     }
   }
 
-  async receiveMessages(maxConcurrentCalls: number,receiverCount: number, receivedMessages: number) {
+  async receiveMessages(maxConcurrentCalls: number,receiverCount: number, receivedMessages: number,queueName:string) {
   
 
     const receivers = receiverCount;
@@ -85,7 +87,7 @@ export class ServiceBus {
     const writeResultsPromise = this.WriteResults(receivedMessages);
     const promises: Promise<void>[] = [];
     for (let x=0; x < receivers; x++){
-      const promise = this.RunTest(maxConcurrentCalls, receivedMessages);
+      const promise = this.RunTest(maxConcurrentCalls, receivedMessages,queueName);
       promises[x] = promise;
     }
     await Promise.all(promises);
@@ -95,7 +97,8 @@ export class ServiceBus {
 
   async RunTest(
     maxConcurrentCalls: number,
-    messages: number
+    messages: number,
+    queueName:string
   ): Promise<void> {
     const connectionString = process.env.SB_CONN_STR || "<connection string>";
     const sbClientLocal = new ServiceBusClient(connectionString);

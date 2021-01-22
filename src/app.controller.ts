@@ -19,11 +19,11 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('getmessage/:maxConcCalls/:receiverCount/:receivedMessages')
+  @Get('getmessage/:maxConcCalls/:receiverCount/:receivedMessages/:queueName')
   async getMessage(@Param('maxConcCalls') maxConcCalls: number, @Param('receiverCount') receiverCount: number, 
-                    @Param('receivedMessages') receivedMessages: number): Promise<string> {
+                    @Param('receivedMessages') receivedMessages: number, @Param('queueName')queueName: string): Promise<string> {
 
-    await this.serviceBus.receiveMessages(maxConcCalls, receiverCount,receivedMessages);
+    await this.serviceBus.receiveMessages(maxConcCalls, receiverCount,receivedMessages,queueName);
     return "ok";
   }
 
@@ -42,7 +42,7 @@ export class AppController {
     if (msg.useSession) {
       this.ServiceBusSession.sendMessageSession(sbClient, body, msg.count, sessionId);
     } else {
-      this.serviceBus.sendMessage(sbClient, body, msg.count, msg.maxInflight, msg.isBatch, msg.batchSize);
+      this.serviceBus.sendMessage(sbClient, body, msg.count, msg.maxInflight, msg.isBatch, msg.queueName,msg.batchSize);
     }
     return "ok";
   }
