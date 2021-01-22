@@ -17,10 +17,10 @@ let msgc = 0;
 export class ServiceBus {
 
 
-  async sendMessage(sbClient: ServiceBusClient, msg: Message[], count: number,maxInflight:number, isBatch: true, batchSize: number) {
+  async sendMessage(sbClient: ServiceBusClient, msg: Message[], count: number,maxInflight:number, isBatch: true, batchSize?: number) {
     const writeResultsPromise = this.WriteResults(count);
 
-    await this.RunTestSend(sbClient, msg, maxInflight, count,isBatch);
+    await this.RunTestSend(sbClient, msg, maxInflight, count,isBatch, batchSize);
   
     await writeResultsPromise;
 
@@ -58,12 +58,13 @@ export class ServiceBus {
   ): Promise<void> {
     while (_messages <= messages) {
       if (batchAPI) {
+        console.log("batchSize:" + batchSize)
         const currentBatch = await sender.createMessageBatch({maxSizeInBytes: batchSize});
         while (
           currentBatch.tryAddMessage({body: msg}) &&
           _messages + currentBatch.count <= messages         
         );
-        // console.log("batchMessages: " + _messages);
+        console.log("batchMessages: " + _messages);
         await sender.sendMessages(currentBatch);
         _messages = _messages + currentBatch.count;
       } else {
