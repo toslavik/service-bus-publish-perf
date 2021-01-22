@@ -17,7 +17,7 @@ let msgc = 0;
 export class ServiceBus {
 
 
-  async sendMessage(sbClient: ServiceBusClient, msg: Message[], count: number,maxInflight:number, isBatch: true) {
+  async sendMessage(sbClient: ServiceBusClient, msg: Message[], count: number,maxInflight:number, isBatch: true, batchSize: number) {
     const writeResultsPromise = this.WriteResults(count);
 
     await this.RunTestSend(sbClient, msg, maxInflight, count,isBatch);
@@ -30,7 +30,8 @@ export class ServiceBus {
     msgBody: Message[],
     maxInflight: number,
     messages: number,
-    batchAPI: boolean
+    batchAPI: boolean,
+    batchSize?: number
   ): Promise<void> {
     // const ns = new ServiceBusClient(connectionString);
   
@@ -39,7 +40,7 @@ export class ServiceBus {
     const promises: Promise<void>[] = [];
   
     for (let i = 0; i < maxInflight; i++) {
-      const promise = this.ExecuteSendsAsync(sender, messages,msgBody, batchAPI);
+      const promise = this.ExecuteSendsAsync(sender, messages,msgBody, batchAPI, batchSize);
       promises[i] = promise;
     }
   
@@ -52,15 +53,17 @@ export class ServiceBus {
     sender: ServiceBusSender,
     messages: number,
     msg: any,
-    batchAPI: boolean
+    batchAPI: boolean,
+    batchSize?: number
   ): Promise<void> {
     while (_messages <= messages) {
       if (batchAPI) {
-        const currentBatch = await sender.createMessageBatch();
+        const currentBatch = await sender.createMessageBatch({maxSizeInBytes: batchSize});
         while (
           currentBatch.tryAddMessage({body: msg}) &&
-          _messages + currentBatch.count <= messages
+          _messages + currentBatch.count <= messages         
         );
+        // console.log("batchMessages: " + _messages);
         await sender.sendMessages(currentBatch);
         _messages = _messages + currentBatch.count;
       } else {

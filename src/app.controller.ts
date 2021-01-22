@@ -35,20 +35,13 @@ export class AppController {
 
   @Post('message')
   postMessage(@Body() msg: any) : string {
-    console.log(msg);
-
-    // let obj = msg.body;
-    // let ret = [];
-    // // Potential DoS if obj.length is large.
-    // for (let i = 0; i < obj.length; i++) {
-    //     ret.push(obj[i]);
-    // }
+    
     const body:Message[] = msg.body
     // console.log(body);
     if(msg.useSession){
       this.ServiceBusSession.sendMessageSession(sbClient,body,msg.count,sessionId);
     }else {
-      this.serviceBus.sendMessage(sbClient,body,msg.count,msg.maxInflight,msg.isBatch);
+      this.serviceBus.sendMessage(sbClient,body,msg.count,msg.maxInflight,msg.isBatch, msg.batchSize);
     }
     return "ok";
   }
