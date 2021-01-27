@@ -7,12 +7,8 @@ import { Message } from './dto/servicebus';
 
 dotenv.config();
 
-// const queueName = "test-no-session";
-let messageBody;
-
 const _start = moment();
 let _messages = 0;
-let msgc = 0;
 @Injectable()
 export class ServiceBus {
 
@@ -35,10 +31,8 @@ export class ServiceBus {
     queueName:string,
     batchSize?: number
   ): Promise<void> {
-    // const ns = new ServiceBusClient(connectionString);
   
     const sender = sbClient.createSender(queueName);
-  
     const promises: Promise<void>[] = [];
   
     for (let i = 0; i < maxInflight; i++) {
@@ -47,7 +41,6 @@ export class ServiceBus {
     }
   
     await Promise.all(promises);
-  
     await sbClient.close();
   }
   
@@ -66,7 +59,6 @@ export class ServiceBus {
           currentBatch.tryAddMessage({body: msg}) &&
           _messages + currentBatch.count <= messages         
         );
-        // console.log("batchMessages: " + _messages);
         await sender.sendMessages(currentBatch);
         _messages = _messages + currentBatch.count;
       } else {
@@ -104,15 +96,10 @@ export class ServiceBus {
     const sbClientLocal = new ServiceBusClient(connectionString);
 
     const options:ServiceBusSessionReceiverOptions = {receiveMode:"receiveAndDelete"};
-    // const receiver = await sbClient.acceptSession(queueName, sessionId, options);
     const receiver = await sbClientLocal.createReceiver(queueName,options);
     const subscribeOptions:SubscribeOptions = {maxConcurrentCalls:maxConcurrentCalls,autoCompleteMessages:false};
 
      const subscription = receiver.subscribe({
-          // After executing this callback you provide, the receiver will remove the message from the queue if you
-          // have not already settled the message in your callback.
-          // You can disable this by passing `false` to the `autoCompleteMessages` option in the `subscribe()` method.
-          // If your callback _does_ throw an error before the message is settled, then it will be abandoned.
           
           processMessage: async (brokeredMessage: ServiceBusReceivedMessage) => {
             _messages++;
@@ -122,20 +109,13 @@ export class ServiceBus {
             }
             
           },
-          
-          // This callback will be called for any error that occurs when either in the receiver when receiving the message
-          // or when executing your `processMessage` callback or when the receiver automatically completes or abandons the message.
           processError: async (args: ProcessErrorArgs) => {
             console.log(`Error from source ${args.errorSource} occurred: `, args.error);
-    
-            // the `subscribe() call will not stop trying to receive messages without explicit intervention from you.
             if (isServiceBusError(args.error)) {
               switch (args.error.code) {
                 case "MessagingEntityDisabled":
                 case "MessagingEntityNotFound":
                 case "UnauthorizedAccess":
-                  // It's possible you have a temporary infrastructure change (for instance, the entity being
-                  // what is considered fatal for your program.
                   console.log(
                     `An unrecoverable error occurred. Stopping processing. ${args.error.code}`,
                     args.error
